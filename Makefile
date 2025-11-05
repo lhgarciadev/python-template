@@ -1,18 +1,17 @@
 install:
-	pip install --upgrade pip &&\
-		pip install -r requirements.txt
+	uv pip install --upgrade pip &&\
+		uv pip install -r requirements.txt
 
 test:
-	# python -m pytest -vv --cov=main --cov=calCLI --cov=mylib test_*.py
+	uv run -m pytest -vv \
+		--cov=main --cov-branch --cov-report=term-missing \
+ 		--cov-fail-under=90 tests/
 
 format:	
-	# black *.py mylib/*.py
+	uv run ruff format main.py tests
 
 lint:
-	# pylint --disable=R,C --extension-pkg-whitelist='pydantic' main.py --ignore-patterns=test_.*?py *.py  mylib/*.py
-
-container-lint:
-	docker run --rm -i hadolint/hadolint < Dockerfile
+	uv run ruff check main.py tests --fix
 
 refactor: format lint
 
